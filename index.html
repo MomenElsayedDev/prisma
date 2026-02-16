@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PRISMA | Precision Task OS</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="p-4 md:p-8">
+    <canvas id="particleCanvas"></canvas>
+
+    <div
+      id="completionOverlay"
+      class="fixed inset-0 z-[3000] bg-[#0f172a]/90 backdrop-blur-md hidden flex items-center justify-center p-6"
+    >
+      <div
+        class="glass-card max-w-sm w-full p-10 text-center space-y-6 border-2 border-indigo-500/30 success-animate"
+      >
+        <div
+          class="w-24 h-24 bg-gradient-to-tr from-emerald-500 to-cyan-400 rounded-full mx-auto flex items-center justify-center shadow-lg"
+        >
+          <i class="fas fa-check text-4xl text-white"></i>
+        </div>
+        <div class="space-y-2">
+          <h2
+            class="text-3xl font-black italic text-white uppercase tracking-tighter"
+          >
+            Mission Cleared!
+          </h2>
+          <p class="text-gray-400 text-sm">
+            Your productivity vibe is peaking right now.
+          </p>
+        </div>
+        <div
+          class="bg-white/5 rounded-2xl p-4 flex justify-around items-center"
+        >
+          <div>
+            <p class="text-[10px] font-black text-indigo-400 uppercase">
+              Gained
+            </p>
+            <p class="text-xl font-black">+50 XP</p>
+          </div>
+          <div class="w-px h-8 bg-white/10"></div>
+          <div>
+            <p class="text-[10px] font-black text-emerald-400 uppercase">
+              Status
+            </p>
+            <p class="text-xl font-black">Elite</p>
+          </div>
+        </div>
+        <button
+          onclick="closeSuccess()"
+          class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black uppercase tracking-widest text-xs rounded-xl transition-all"
+        >
+          Keep Flowing
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="max-w-6xl mx-auto space-y-6 transition-all duration-700"
+      id="mainApp"
+    >
+      <div class="flex justify-between items-center px-4">
+        <div class="flex items-center gap-3">
+          <div
+            class="bg-rose-500/10 px-3 py-1 rounded-full border border-rose-500/20 text-[10px] font-black text-rose-500 uppercase tracking-widest"
+          >
+            Deadline: <span id="deadline">--:--</span>
+          </div>
+          <button
+            onclick="toggleZen()"
+            class="text-[10px] font-bold text-gray-400 hover:text-indigo-500 transition-colors uppercase"
+          >
+            <i class="fas fa-eye-slash mr-1"></i> Zen Mode
+          </button>
+        </div>
+        <div class="flex items-center gap-4">
+          <button
+            onclick="toggleTheme()"
+            class="w-10 h-10 glass-card flex items-center justify-center hover:scale-110 transition-transform"
+          >
+            <i id="themeIcon" class="fas fa-moon text-indigo-500"></i>
+          </button>
+          <button
+            onclick="exportData()"
+            class="text-[10px] font-bold text-gray-500 hover:text-white transition-colors uppercase"
+          >
+            <i class="fas fa-download mr-1"></i> Backup
+          </button>
+        </div>
+      </div>
+
+      <header
+        class="glass-card py-8 px-10 flex flex-col md:flex-row justify-between items-center gap-6"
+      >
+        <div class="flex items-center gap-6">
+          <div
+            class="w-20 h-20 bg-gradient-to-tr from-indigo-600 via-purple-500 to-cyan-400 rounded-3xl flex items-center justify-center shadow-[0_0_30px_rgba(99,102,241,0.4)] hover:rotate-12 transition-all duration-500 group"
+          >
+            <i
+              class="fas fa-layer-group text-4xl text-white group-hover:scale-110 transition-transform"
+            ></i>
+          </div>
+          <div>
+            <h1
+              class="text-4xl font-black tracking-tighter bg-gradient-to-r from-indigo-500 to-cyan-500 bg-clip-text text-transparent"
+            >
+              PRISMA
+            </h1>
+            <p
+              class="text-[10px] font-black text-gray-500 uppercase tracking-[0.4em]"
+            >
+              Precision Task OS
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="flex gap-10 bg-indigo-900/40 dark:bg-indigo-950/60 backdrop-blur-xl px-10 py-5 rounded-[2rem] border border-indigo-500/20 shadow-xl"
+        >
+          <div class="text-center">
+            <p
+              class="text-[10px] text-indigo-300 font-black uppercase mb-1 tracking-wider"
+            >
+              Score
+            </p>
+            <span
+              id="vibeScore"
+              class="text-3xl font-black text-white drop-shadow-[0_0_10px_rgba(165,180,252,0.4)]"
+            >
+              0
+            </span>
+          </div>
+
+          <div class="h-10 w-px bg-indigo-500/20"></div>
+
+          <div class="text-center">
+            <p
+              class="text-[10px] text-indigo-300 font-black uppercase mb-1 tracking-wider"
+            >
+              Efficiency
+            </p>
+            <span
+              id="efficiency"
+              class="text-3xl font-black text-white drop-shadow-[0_0_10px_rgba(165,180,252,0.4)]"
+            >
+              0%
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-4 space-y-6">
+          <div class="glass-card p-8">
+            <h3
+              class="text-xl font-black mb-6 italic flex items-center gap-3 text-white"
+            >
+              <span class="w-1.5 h-6 bg-indigo-500 rounded-full"></span> New
+              Mission
+            </h3>
+            <div class="space-y-6">
+              <input
+                type="text"
+                id="taskInput"
+                class="glass-input w-full p-4 rounded-2xl text-sm"
+                placeholder="Define objective..."
+              />
+
+              <div class="grid grid-cols-3 gap-2">
+                <button
+                  onclick="setPriority('low', this)"
+                  class="priority-btn p-3 rounded-xl border border-gray-500/10 text-[10px] font-black uppercase transition-all bg-indigo-500/20 text-indigo-500"
+                >
+                  Chill
+                </button>
+                <button
+                  onclick="setPriority('med', this)"
+                  class="priority-btn p-3 rounded-xl border border-gray-500/10 text-[10px] font-black uppercase transition-all"
+                >
+                  Focus
+                </button>
+                <button
+                  onclick="setPriority('high', this)"
+                  class="priority-btn p-3 rounded-xl border border-gray-500/10 text-[10px] font-black uppercase transition-all"
+                >
+                  Urgent
+                </button>
+              </div>
+
+              <button
+                onclick="addTask()"
+                class="w-full py-5 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest text-xs hover:bg-indigo-500 transition-all flex items-center justify-center gap-3"
+              >
+                DEPLOY MISSION <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="glass-card p-6 flex justify-around text-center">
+            <div>
+              <p id="totalTasks" class="text-2xl font-black">0</p>
+              <p class="text-[9px] font-bold text-gray-500 uppercase">Active</p>
+            </div>
+            <div class="w-px bg-gray-500/10"></div>
+            <div>
+              <p id="doneTasks" class="text-2xl font-black text-emerald-500">
+                0
+              </p>
+              <p class="text-[9px] font-bold text-gray-500 uppercase">
+                Cleared
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-8 space-y-6">
+          <div class="flex gap-4">
+            <div class="relative flex-1">
+              <i
+                class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 search-icon transition-colors"
+              ></i>
+              <input
+                type="text"
+                id="search"
+                onkeyup="render()"
+                placeholder="Search objectives..."
+                class="w-full glass-input py-4 pl-14 pr-6 rounded-2xl text-sm font-black transition-all outline-none bg-white/10 dark:bg-black/20 [html[data-theme='light']_&]:bg-white [html[data-theme='light']_&]:text-indigo-900 [html[data-theme='light']_&]:border-gray-200"
+              />
+            </div>
+            <button
+              onclick="shareReport()"
+              ontouchstart=""
+              class="glass-card px-6 py-4 active:scale-95 transition-transform hover:bg-indigo-500/10 text-[10px] font-black uppercase tracking-widest flex items-center gap-2"
+              style="cursor: pointer; -webkit-tap-highlight-color: transparent"
+            >
+              <i class="fas fa-file-export"></i> Report
+            </button>
+          </div>
+          <div id="taskList" class="space-y-4 min-h-[400px]"></div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="editModal"
+      class="fixed inset-0 bg-black/80 backdrop-blur-xl hidden z-[4000] flex items-center justify-center p-6"
+    >
+      <div class="glass-card w-full max-w-md p-10">
+        <h2 class="text-2xl font-black mb-8 italic text-white">
+          Update Objective
+        </h2>
+        <input
+          type="text"
+          id="editInput"
+          class="w-full glass-input p-4 rounded-2xl mb-8 font-bold text-white"
+        />
+        <div class="flex gap-3">
+          <button
+            id="saveEdit"
+            class="flex-1 py-4 bg-indigo-600 rounded-2xl font-black text-xs uppercase text-white"
+          >
+            Save
+          </button>
+          <button
+            onclick="
+              document.getElementById('editModal').classList.add('hidden')
+            "
+            class="px-6 py-4 bg-white/10 rounded-2xl font-bold text-xs uppercase text-white"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
