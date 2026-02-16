@@ -1,20 +1,16 @@
 # PRISMA – Precision Task OS
 
----
-
 ## 📌 Overview
 
 PRISMA is a modern, gamified productivity operating system built entirely with frontend technologies.  
 
 Instead of traditional to-do lists, PRISMA turns tasks into **missions**, tracks performance in real time, and delivers measurable productivity metrics through a clean, immersive UI.
 
----
-
 ## 🖼 Screenshots
 
 ![LOGO](assets/logo.png)
 
----
+
 
 ## 🚀 Features
 
@@ -27,8 +23,6 @@ Instead of traditional to-do lists, PRISMA turns tasks into **missions**, tracks
 - 📤 One-click Report Export  
 - ✨ Animated Particle Background  
 - 📱 Fully Responsive Design  
-
----
 
 ## 🧮 Productivity Engine
 
